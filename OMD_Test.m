@@ -311,7 +311,7 @@ q_g_max = 0.45*p_g_max;
 % ------------ % Initial reactive power for running OMD % ------------ % 
 q_g = zeros(PV_n,1);
 % ------------ % Number of periods % ------------ %
-T = 60;
+T = 30;
 % ------------ % Number of realization of OMD % ------------ %
 num_real = 1;
 % ------------ % The variance of changing loads and PVs % ------------ %
@@ -457,7 +457,7 @@ legend({'OMD(Stochastic)','OMD(Deterministic)'},'interpreter','latex')
 
 
 
- [c2,~, ~,~,~,~,~,q_g_2] = Optimal_DistFlowSolver_vms_q_g(nbr,n,PV_n,r,x,p_c,q_c,p_g,q_g,children,injection_matrix,parent,PV_matrix,q_g_max,zeros(n,1),zeros(n,1),0);
+ [c2,P, Q,l,vms,y2,y4,q_g_2] = Optimal_DistFlowSolver_vms_q_g(nbr,n,PV_n,r,x,p_c,q_c,p_g,q_g,children,injection_matrix,parent,PV_matrix,q_g_max,zeros(n,1),zeros(n,1),0);
 
  [c3,~, ~,~,~,~,~,q_g_3] = Optimal_DistFlowSolver_vms(nbr,n,PV_n,r,x,p_c,q_c,p_g,q_g,children,injection_matrix,parent,PV_matrix,zeros(n,1),zeros(n,1),0);
 
