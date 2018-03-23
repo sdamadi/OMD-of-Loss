@@ -1,7 +1,6 @@
 clc
 clear
 close all
-tic
 % it is uploaded to git
 %-----------------------------------------------%
 % 
@@ -312,7 +311,7 @@ q_g_max = 0.45*p_g_max;
 % ------------ % Initial reactive power for running OMD % ------------ % 
 q_g = zeros(PV_n,1);
 % ------------ % Number of periods % ------------ %
-T = 11;
+T = 30;
 % ------------ % Number of realization of OMD % ------------ %
 num_real = 1;
 % ------------ % The variance of changing loads and PVs % ------------ %
@@ -330,7 +329,7 @@ c_n = 1/80;
 
 for o = 1:num_real
 
-for k = 1:T
+for k = 1:1
     k
 
 % ------------ % The real loss of network (c0) without noise % ------------ %
@@ -385,7 +384,7 @@ end
 % ------------ % Check feasibility of the answer % ------------ % 
 for i=2:nbr
 
-    check_s(i,1) = norm ( [ 2*P_s(i) 2*Q_s(i) ( l_s(i) - vms_s(i) ) ] ) - ( l_s(i) + vms_s(i) ); 
+    check_s = norm ( [ 2*P_s(i) 2*Q_s(i) ( l_s(i) - vms_s(i) ) ] ) - ( l_s(i) + vms_s(i) ); 
     
 end
 % ------------ ------------ ------------ ------------ ------------ %
@@ -481,13 +480,10 @@ legend({'OMD(Stochastic)','OMD(Deterministic)'},'interpreter','latex')
  
  for i=2:nbr
 
-    check_conq(i,1) = norm ( [ 2*P_conq(i) 2*Q_conq(i) ( l_conq(i) - vms_conq(i) ) ] ) - ( l_conq(i) + vms_conq(i) );
+    check_conq = norm ( [ 2*P_conq(i) 2*Q_conq(i) ( l_conq(i) - vms_conq(i) ) ] ) - ( l_conq(i) + vms_conq(i) );
     
 end
 % ------------ ------------ ------------ ------------ ------------ %
-
-% ------------ % Optimal Problem without constraints on q_g's % ------------ %
-% ------------ % Optimal Problem without constraints on q_g's % ------------ %
 
  [c3,P_noconq, Q_noconq,l_noconq,vms_noconq,y2,y4,q_g_3] = Optimal_DistFlowSolver_vms(nbr,n,PV_n,r,x,p_c,q_c,p_g,q_g,children,injection_matrix,parent,PV_matrix,zeros(n,1),zeros(n,1),0);
  
@@ -495,7 +491,7 @@ end
  
  for i=2:nbr
 
-    check_noconq(i,1) = norm ( [ 2*P_noconq(i) 2*Q_noconq(i) ( l_noconq(i) - vms_noconq(i) ) ] ) - ( l_noconq(i) + vms_noconq(i) );
+    check_noconq = norm ( [ 2*P_noconq(i) 2*Q_noconq(i) ( l_noconq(i) - vms_noconq(i) ) ] ) - ( l_conq(i) + vms_conq(i) );
     
 end
 % ------------ ------------ ------------ ------------ ------------ %
@@ -533,7 +529,6 @@ legend({'OMD(Stochastic)','OMD(Deterministic)','Convex Problem','Unconstrained $
 
 
 %%
-toc
 
 
 
