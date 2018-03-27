@@ -312,11 +312,11 @@ q_g_max = 0.45*p_g_max;
 % ------------ % Initial reactive power for running OMD % ------------ % 
 q_g = zeros(PV_n,1);
 % ------------ % Number of periods % ------------ %
-T = 11;
+T = 30;
 % ------------ % Number of realization of OMD % ------------ %
 num_real = 1;
 % ------------ % The variance of changing loads and PVs % ------------ %
-var = 0.05;
+var = 0.01;
 % ------------ % The OMD's parameter % ------------ %
 eta = 2;
 c_n = 1/80;
@@ -451,6 +451,11 @@ for i=2:nbr
     
 end
 % ------------ ------------ ------------ ------------ ------------ %
+
+if k == 10
+    
+    
+end
 end
 
 
@@ -462,7 +467,7 @@ xlim([0 T-1])
 ylabel('$\tilde{c}_0 E[f_t(q^g)]+\tilde{c}_n\sum\limits_{n \in n_q }\left | q^g \right | $','Interpreter','latex')
 x_t = round(T/4,0);
 y_t = f1(x_t,1);
-txt = ['$\sigma ^ 2 =$',num2str(var,'%2.2f')];
+txt = ['$\sigma ^ 2 =$',num2str(var,'%2.2f'),'$\,\,\,\,\eta =$',num2str(eta,'%1.0f'),'$\,\,\,\,c_n =$',num2str(c_n,'%2.5f')];
 text(x_t,y_t,txt,'interpreter','latex')
 legend({'OMD(Stochastic)','OMD(Deterministic)'},'interpreter','latex')
 
@@ -475,7 +480,7 @@ legend({'OMD(Stochastic)','OMD(Deterministic)'},'interpreter','latex')
 % ------------ % Optimal Problem with constraints on q_g's % ------------ %
 
 
- [c2,P_conq, Q_conq,l_conq,vms_conq,y2,y4,q_g_2] = Optimal_DistFlowSolver_vms_q_g(nbr,n,PV_n,r,x,p_c,q_c,p_g,q_g,children,injection_matrix,parent,PV_matrix,q_g_max,zeros(n,1),zeros(n,1),0);
+ [c2,P_conq, Q_conq,l_conq,vms_conq,y2,y4,q_g_2] = Optimal_DistFlowSolver_vms_q_g(nbr,n,PV_n,r,x,p_c,q_c,p_g,q_g,children,injection_matrix,parent,PV_matrix,q_g_max,zeros(n,1),zeros(n,1),0,c_n);
  
  % ------------ % Check feasibility of the answer % ------------ % 
  
@@ -489,7 +494,7 @@ end
 % ------------ % Optimal Problem without constraints on q_g's % ------------ %
 % ------------ % Optimal Problem without constraints on q_g's % ------------ %
 
- [c3,P_noconq, Q_noconq,l_noconq,vms_noconq,y2,y4,q_g_3] = Optimal_DistFlowSolver_vms(nbr,n,PV_n,r,x,p_c,q_c,p_g,q_g,children,injection_matrix,parent,PV_matrix,zeros(n,1),zeros(n,1),0);
+ [c3,P_noconq, Q_noconq,l_noconq,vms_noconq,y2,y4,q_g_3] = Optimal_DistFlowSolver_vms(nbr,n,PV_n,r,x,p_c,q_c,p_g,q_g,children,injection_matrix,parent,PV_matrix,zeros(n,1),zeros(n,1),0,c_n);
  
  % ------------ % Check feasibility of the answer % ------------ % 
  
@@ -512,7 +517,7 @@ xlim([0 T-1])
 ylabel('$\tilde{c}_0 E[f_t(q^g)]+\tilde{c}_n\sum\limits_{n \in n_q }\left | q^g \right | $','Interpreter','latex')
 x_t = round(T/4,0);
 y_t = f1(x_t,1);
-txt = ['$\sigma ^ 2 =$',num2str(var,'%2.2f')];
+txt = ['$\sigma ^ 2 =$',num2str(var,'%2.2f'),'$\,\,\,\,\eta =$',num2str(eta,'%1.0f'),'$\,\,\,\,c_n =$',num2str(c_n,'%2.5f')];
 text(x_t,y_t,txt,'interpreter','latex')
 legend({'OMD(Stochastic)','OMD(Deterministic)','Convex Problem','Unconstrained $q^g$'},'interpreter','latex')
 
@@ -524,7 +529,7 @@ xlim([0 T-1])
 ylabel('$E[f_t(q^g)]$','Interpreter','latex')
 x_t = round(T/4,0);
 y_t = c0(x_t);
-txt = ['$\sigma ^ 2 =$',num2str(var,'%2.2f')];
+txt = ['$\sigma ^ 2 =$',num2str(var,'%2.2f'),'$\,\,\,\,\eta =$',num2str(eta,'%1.0f'),'$\,\,\,\,c_n =$',num2str(c_n,'%2.5f')];
 text(x_t,y_t,txt,'interpreter','latex')
 legend({'OMD(Stochastic)','OMD(Deterministic)','Convex Problem','Unconstrained $q^g$'},'interpreter','latex')
  
