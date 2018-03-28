@@ -312,7 +312,7 @@ q_g_max = 0.45*p_g_max;
 % ------------ % Initial reactive power for running OMD % ------------ % 
 q_g = zeros(PV_n,1);
 % ------------ % Number of periods % ------------ %
-T = 1201;
+T = 241;
 % ------------ % Number of realization of OMD % ------------ %
 num_real = 1;
 % ------------ % The variance of changing loads and PVs % ------------ %
@@ -471,9 +471,7 @@ text(x_t,y_t,txt,'interpreter','latex')
 legend({'OMD(Stochastic)','OMD(Deterministic)'},'interpreter','latex')
 
 h = figure (1);
-cd 'C:\Users\Saeed\OneDrive\UMBC\Dr. Kim\My papers\Matlab\First Paper\OMD-of-Loss\Figures'
-saveas(h,sprintf('OMD_St_vs_De_sig=%2.2f_eta=%1.0f_c_n=%2.5f.png',var,eta,c_n));
-cd 'C:\Users\Saeed\OneDrive\UMBC\Dr. Kim\My papers\Matlab\First Paper\OMD-of-Loss'
+saveas(h,sprintf('OMD_St_vs_De_sig%2.2f_eta%1.0_c_n.png',2));
 
 
 
@@ -526,11 +524,23 @@ txt = ['$\sigma ^ 2 =$',num2str(var,'%2.2f'),'$\,\,\,\,\eta =$',num2str(eta,'%1.
 text(x_t,y_t,txt,'interpreter','latex')
 legend({'OMD(Stochastic)','OMD(Deterministic)','Convex Problem','Unconstrained $q^g$'},'interpreter','latex')
 
-h = figure (2);
-cd 'C:\Users\Saeed\OneDrive\UMBC\Dr. Kim\My papers\Matlab\First Paper\OMD-of-Loss\Figures'
-saveas(h,sprintf('All_sig=%2.2f_eta=%1.0f_c_n=%2.5f.png',var,eta,c_n));
-cd 'C:\Users\Saeed\OneDrive\UMBC\Dr. Kim\My papers\Matlab\First Paper\OMD-of-Loss'
+% figure (3)
+% 
+% plot(0:k-1,c0,0:k-1,c_d,0:k-1,c2*ones(1,T),0:k-1,c3*ones(1,T))
+% xlabel('$t\,(min)$','Interpreter','latex')
+% xlim([0 T-1])
+% ylabel('$E[f_t(q^g)]$','Interpreter','latex')
+% x_t = round(T/4,0);
+% y_t = c0(x_t);
+% txt = ['$\sigma ^ 2 =$',num2str(var,'%2.2f'),'$\,\,\,\,\eta =$',num2str(eta,'%1.0f'),'$\,\,\,\,c_n =$',num2str(c_n,'%2.5f')];
+% text(x_t,y_t,txt,'interpreter','latex')
+% legend({'OMD(Stochastic)','OMD(Deterministic)','Convex Problem','Unconstrained $q^g$'},'interpreter','latex')
+ 
 
+
+
+
+%%
 toc
 
 
