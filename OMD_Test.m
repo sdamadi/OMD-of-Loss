@@ -309,10 +309,11 @@ end
 p_g_max = [1.5 0.4 1.5 1 2]';
 % ------------ % Maximum reactive power produced by inverters of PVs % ------------ % 
 q_g_max = 0.45*p_g_max;
+q_g_min = -q_g_max;
 % ------------ % Initial reactive power for running OMD % ------------ % 
 q_g = zeros(PV_n,1);
 % ------------ % Number of periods % ------------ %
-T = 1201;
+T = 10;
 % ------------ % Number of realization of OMD % ------------ %
 num_real = 1;
 % ------------ % The variance of changing loads and PVs % ------------ %
@@ -335,14 +336,14 @@ for k = 1:T
 
 % ------------ % The real loss of network (c0) without noise % ------------ %
 
-[c0(o,k)] = DistFlowSolver_vms(nbr,n,r,x,p_c,q_c,p_g,q_g,children,injection_matrix,parent,PV_matrix,zeros(n,1),zeros(n,1),0);
+[c0(o,k),P_r, Q_r,l_r,vms_r] = DistFlowSolver_vms(nbr,n,r,x,p_c,q_c,p_g,q_g,children,injection_matrix,parent,PV_matrix,PV_n,zeros(n,1),zeros(n,1),0);
 
 % ------------ % Finding the dual variables y2 corresponding to q_g's from the dual problem with noise % ------------ %
 
 eps1(:,k) = randn(n,1);%zeros(n,1);
 eps2(:,k) = randn(n,1);%zeros(n,1);
 
-[c1(o,k),P_s,Q_s,l_s,vms_s,y2(:,k),~] = DistFlowSolver_vms(nbr,n,r,x,p_c,q_c,p_g,q_g,children,injection_matrix,parent,PV_matrix,eps1(:,k),eps2(:,k),var);
+[c1(o,k),P_s,Q_s,l_s,vms_s,y2(:,k),~] = DistFlowSolver_vms(nbr,n,r,x,p_c,q_c,p_g,q_g,children,injection_matrix,parent,PV_matrix,PV_n,eps1(:,k),eps2(:,k),var);
 
 % ------------ % Cost regarding real loss c0 and q_g's achieved from OMD % ------------ %
 
@@ -408,7 +409,7 @@ for o = 1:num_real
 for k = 1:T
     k
 
-[c_d(o,k),P_d,Q_d,l_d,vms_d,y2_d(:,k)] = DistFlowSolver_vms(nbr,n,r,x,p_c,q_c,p_g,q_g,children,injection_matrix,parent,PV_matrix,zeros(n,1),zeros(n,1),0);
+[c_d(o,k),P_d,Q_d,l_d,vms_d,y2_d(:,k)] = DistFlowSolver_vms(nbr,n,r,x,p_c,q_c,p_g,q_g,children,injection_matrix,parent,PV_matrix,PV_n,zeros(n,1),zeros(n,1),0);
 f_d(k,1) = 6.6*1000*c_d(o,k) + 6.6*1000*c_n*sum(abs(q_g)); 
 
 % ------------ % The gradient % ------------ %

@@ -1,4 +1,4 @@
-function [c,P, Q,l,vms,y2,y4] = DistFlowSolver_vms(nbr,n,r,x,p_c,q_c,p_g,q_g,children,injection_matrix,parent,PV_matrix,eps1,eps2,var)
+function [c,P, Q,l,vms,y2,y4] = DistFlowSolver_vms(nbr,n,r,x,p_c,q_c,p_g,q_g,children,injection_matrix,parent,PV_matrix,PV_n,eps1,eps2,var)
 cvx_begin quiet
 
 variables  P(nbr) Q(nbr) l(nbr) vms(n) %q_g(PV_n)  
@@ -18,7 +18,7 @@ c=r'*l;
             
         y4 : injection_matrix*vms == parent*vms - 2*( diag(r)*P + diag(x)*Q ) + ( diag(r.^2) + diag(x.^2) )*l     
               
-%          y5 : PV_matrix'*vms == ones(PV_n,1)
+%         y5 : PV_matrix'*vms == ones(PV_n,1)
 
 for i=1:nbr
 
@@ -29,6 +29,8 @@ end
 
 
         y7: (1-0.05)^2*ones(n-1,1)<=[zeros(n-1,1) eye(n-1,n-1)]*vms<=(1+0.05)^2*ones(n-1,1)
+        
+        %(1-0.05)^2*ones(PQ_n,1)<=PQ_matrix*vms<=(1+0.05)^2*ones(PQ_n,1)
 %            -q_g_max<=q_g<=q_g_max
  
  cvx_end
