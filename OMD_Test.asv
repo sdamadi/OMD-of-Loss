@@ -63,7 +63,7 @@ busdata = [
 
 linedata= [
 %nbr nf  nt         r         x
-1	1	2	1.1e-5	1.1e-6
+1	1	2	0	0
 2	2	3	0.00170	0.00530
 3	3	14	1.1e-5	1.1e-6
 4	3	4	0.00020	0.00060
@@ -91,13 +91,13 @@ linedata= [
 26	12	13	0.00050	0.00030
 27	16	19	0.00030	0.00010
 28	16	17	0.00070	0.00010
-29	17	18	1.1e-5	1.1e-6
-30	19	20	1.1e-5	1.1e-6
+29	17	18	1.1e-8	1.1e-7
+30	19	20	1.1e-8	1.1e-7
 31	21	22	0.00080	0.00060
 32	21	26	0.00140	0.00030
-33	22	25	1.1e-5	1.1e-6
+33	22	25	1.1e-8	1.1e-7
 34	22	23	0.00130	0.00030
-35	23	24	1.1e-5	1.1e-6
+35	23	24	1.1e-8	1.1e-7
 36	28	32	0.00030	0.00010
 37	28	29	0.00070	0.00020
 38	29	30	0.00070	0.00020
@@ -313,7 +313,7 @@ q_g_min = -q_g_max;
 % ------------ % Initial reactive power for running OMD % ------------ % 
 q_g = zeros(PV_n,1);
 % ------------ % Number of periods % ------------ %
-T = 10;
+T = 1;
 % ------------ % Number of realization of OMD % ------------ %
 num_real = 1;
 % ------------ % The variance of changing loads and PVs % ------------ %
@@ -384,23 +384,22 @@ q_online(:,1,k) = q_t;
 
 end
 
-% ------------ % Check feasibility of the answer for the real loss % ------------ % 
-for i=1:nbr
+% ------------ % Check feasibility of the answer % ------------ % 
+for i=2:nbr
 
-    check_r(i,1) = norm ( [ 2*P_r(i) 2*Q_r(i) ( l_r(i) - vms_r(i) ) ] ) - ( l_r(i) + vms_r(i) );   
- 
-end
-% ------------ ------------ ------------ ------------ ------------ %
-
-
-% ------------ % Check feasibility of the answer for noise contaminated optimization % ------------ % 
-for i=1:nbr
-
-    check_s(i,1) = norm ( [ 2*P_s(i) 2*Q_s(i) ( l_s(i) - vms_s(i) ) ] ) - ( l_s(i) + vms_s(i) );
+    check_s(i,1) = norm ( [ 2*P_s(i) 2*Q_s(i) ( l_s(i) - vms_s(i) ) ] ) - ( l_s(i) + vms_s(i) ); 
     
 end
 % ------------ ------------ ------------ ------------ ------------ %
 
+
+% ------------ % Check feasibility of the answer % ------------ % 
+for i=2:nbr
+
+    check_s(i,1) = norm ( [ 2*P_s(i) 2*Q_s(i) ( l_s(i) - vms_s(i) ) ] ) - ( l_s(i) + vms_s(i) ); 
+    
+end
+% ------------ ------------ ------------ ------------ ------------ %
 end
 
 % ------------ % Deterministic OMD % ------------ %
