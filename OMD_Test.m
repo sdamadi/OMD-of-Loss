@@ -313,11 +313,11 @@ q_g_min = -q_g_max;
 % ------------ % Initial reactive power for running OMD % ------------ % 
 q_g = zeros(PV_n,1);
 % ------------ % Number of periods % ------------ %
-T = 10;
+T = 121;
 % ------------ % Number of realization of OMD % ------------ %
 num_real = 1;
 % ------------ % The variance of changing loads and PVs % ------------ %
-var = 0.10;
+var = 0.08;
 % ------------ % The OMD's parameter % ------------ %
 eta = 4;
 c_n = 1/80;
@@ -482,9 +482,9 @@ txt = ['$\sigma ^ 2 =$',num2str(var,'%2.2f'),'$\,\,\,\,\eta =$',num2str(eta,'%1.
 text(x_t,y_t,txt,'interpreter','latex')
 legend({'OMD(Stochastic)','OMD(Deterministic)'},'interpreter','latex')
 
-h = figure (1);
-cd 'C:\Users\Saeed\OneDrive\UMBC\Dr. Kim\My papers\Matlab\First Paper\OMD-of-Loss\Figures'
-saveas(h,sprintf('OMD_St_vs_De_sig=%2.2f_eta=%1.0f_c_n=%2.5f.png',var,eta,c_n));
+fig_1 = figure (1);
+cd 'C:\Users\Saeed\OneDrive\UMBC\Dr. Kim\My papers\Matlab\First Paper\Figures_OMD-of-Loss'
+saveas(fig_1,sprintf('OMD_St_vs_De_var=%2.2f_eta=%1.0f_c_n=%2.5f_T=%d.png',var,eta,c_n,T-1));
 cd 'C:\Users\Saeed\OneDrive\UMBC\Dr. Kim\My papers\Matlab\First Paper\OMD-of-Loss'
 
 
@@ -501,7 +501,7 @@ cd 'C:\Users\Saeed\OneDrive\UMBC\Dr. Kim\My papers\Matlab\First Paper\OMD-of-Los
  
  % ------------ % Check feasibility of the answer % ------------ % 
  
- for i=2:nbr
+ for i=1:nbr
 
     check_conq(i,1) = norm ( [ 2*P_conq(i) 2*Q_conq(i) ( l_conq(i) - vms_conq(i) ) ] ) - ( l_conq(i) + vms_conq(i) );
     
@@ -515,7 +515,7 @@ end
  
  % ------------ % Check feasibility of the answer % ------------ % 
  
- for i=2:nbr
+ for i=1:nbr
 
     check_noconq(i,1) = norm ( [ 2*P_noconq(i) 2*Q_noconq(i) ( l_noconq(i) - vms_noconq(i) ) ] ) - ( l_noconq(i) + vms_noconq(i) );
     
@@ -538,9 +538,9 @@ txt = ['$\sigma ^ 2 =$',num2str(var,'%2.2f'),'$\,\,\,\,\eta =$',num2str(eta,'%1.
 text(x_t,y_t,txt,'interpreter','latex')
 legend({'OMD(Stochastic)','OMD(Deterministic)','Convex Problem','Unconstrained $q^g$'},'interpreter','latex')
 
-h = figure (2);
-cd 'C:\Users\Saeed\OneDrive\UMBC\Dr. Kim\My papers\Matlab\First Paper\OMD-of-Loss\Figures'
-saveas(h,sprintf('All_sig=%2.2f_eta=%1.0f_c_n=%2.5f.png',var,eta,c_n));
+fig_2 = figure (2);
+cd 'C:\Users\Saeed\OneDrive\UMBC\Dr. Kim\My papers\Matlab\First Paper\Figures_OMD-of-Loss'
+saveas(fig_2,sprintf('All_var=%2.2f_eta=%1.0f_c_n=%2.5f_T=%d.png',var,eta,c_n,T-1));
 cd 'C:\Users\Saeed\OneDrive\UMBC\Dr. Kim\My papers\Matlab\First Paper\OMD-of-Loss'
 
 toc
