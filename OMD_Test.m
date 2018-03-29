@@ -307,17 +307,20 @@ end
 
 % ------------ % Maximum active power produced by PV's % ------------ % 
 p_g_max = [1.5 0.4 1.5 1 2]';
+% ------------ % Nominal active power produced by PV's % ------------ %
+p_g_nom = PV_ratio*p_g_max;
 % ------------ % Maximum reactive power produced by inverters of PVs % ------------ % 
 q_g_max = 0.45*p_g_max;
 q_g_min = -q_g_max;
 % ------------ % Initial reactive power for running OMD % ------------ % 
 q_g = zeros(PV_n,1);
 % ------------ % Number of periods % ------------ %
-T = 121;
+T = 11;
 % ------------ % Number of realization of OMD % ------------ %
 num_real = 1;
 % ------------ % The variance of changing loads and PVs % ------------ %
-var = 0.08;
+var_1 = 0.05;
+var_2 = 0.01;
 % ------------ % The OMD's parameter % ------------ %
 eta = 4;
 c_n = 1/80;
@@ -333,17 +336,18 @@ for o = 1:num_real
 
 for k = 1:T
     k
+p_g_rand = p_g_nom + var_2*randn(PV_n,1);
 
 % ------------ % The real loss of network (c0) without noise % ------------ %
 
-[c0(o,k),P_r, Q_r,l_r,vms_r] = DistFlowSolver_vms(nbr,n,r,x,p_c,q_c,p_g,q_g,children,injection_matrix,parent,PV_matrix,PV_n,zeros(n,1),zeros(n,1),0);
+[c0(o,k),P_r, Q_r,l_r,vms_r] = DistFlowSolver_vms(nbr,n,r,x,p_c,q_c,p_g_rand,q_g,children,injection_matrix,parent,PV_matrix,PV_n,zeros(n,1),zeros(n,1),0);
 
 % ------------ % Finding the dual variables y2 corresponding to q_g's from the dual problem with noise % ------------ %
 
 eps1(:,k) = randn(n,1);%zeros(n,1);
 eps2(:,k) = randn(n,1);%zeros(n,1);
 
-[c1(o,k),P_s,Q_s,l_s,vms_s,y2(:,k),~] = DistFlowSolver_vms(nbr,n,r,x,p_c,q_c,p_g,q_g,children,injection_matrix,parent,PV_matrix,PV_n,eps1(:,k),eps2(:,k),var);
+[c1(o,k),P_s,Q_s,l_s,vms_s,y2(:,k),~] = DistFlowSolver_vms(nbr,n,r,x,p_c,q_c,p_g_rand,q_g,children,injection_matrix,parent,PV_matrix,PV_n,eps1(:,k),eps2(:,k),var_1);
 
 % ------------ % Cost regarding real loss c0 and q_g's achieved from OMD % ------------ %
 
@@ -420,7 +424,7 @@ for o = 1:num_real
 for k = 1:T
     k
 
-[c_d(o,k),P_d,Q_d,l_d,vms_d,y2_d(:,k)] = DistFlowSolver_vms(nbr,n,r,x,p_c,q_c,p_g,q_g,children,injection_matrix,parent,PV_matrix,PV_n,zeros(n,1),zeros(n,1),0);
+[c_d(o,k),P_d,Q_d,l_d,vms_d,y2_d(:,k)] = DistFlowSolver_vms(nbr,n,r,x,p_c,q_c,p_g_nom,q_g,children,injection_matrix,parent,PV_matrix,PV_n,zeros(n,1),zeros(n,1),0);
 f_d(k,1) = 6.6*1000*c_d(o,k) + 6.6*1000*c_n*sum(abs(q_g)); 
 
 % ------------ % The gradient % ------------ %
@@ -478,13 +482,13 @@ xlim([0 T-1])
 ylabel('$\tilde{c}_0 E[f_t(q^g)]+\tilde{c}_n\sum\limits_{n \in n_q }\left | q^g \right | $','Interpreter','latex')
 x_t = round(T/4,0);
 y_t = f1(x_t,1);
-txt = ['$\sigma ^ 2 =$',num2str(var,'%2.2f'),'$\,\,\,\,\eta =$',num2str(eta,'%1.0f'),'$\,\,\,\,c_n =$',num2str(c_n,'%2.5f')];
+txt = ['$\sigma ^ 2 =$',num2str(var_1,'%2.2f'),'$\,\,\,\,\eta =$',num2str(eta,'%1.0f'),'$\,\,\,\,c_n =$',num2str(c_n,'%2.5f')];
 text(x_t,y_t,txt,'interpreter','latex')
 legend({'OMD(Stochastic)','OMD(Deterministic)'},'interpreter','latex')
 
 fig_1 = figure (1);
 cd 'C:\Users\Saeed\OneDrive\UMBC\Dr. Kim\My papers\Matlab\First Paper\Figures_OMD-of-Loss'
-saveas(fig_1,sprintf('OMD_St_vs_De_var=%2.2f_eta=%1.0f_c_n=%2.5f_T=%d.png',var,eta,c_n,T-1));
+saveas(fig_1,sprintf('OMD_St_vs_De_var=%2.2f_eta=%1.0f_c_n=%2.5f_T=%d.png',var_1,eta,c_n,T-1));
 cd 'C:\Users\Saeed\OneDrive\UMBC\Dr. Kim\My papers\Matlab\First Paper\OMD-of-Loss'
 
 
@@ -534,13 +538,13 @@ xlim([0 T-1])
 ylabel('$\tilde{c}_0 E[f_t(q^g)]+\tilde{c}_n\sum\limits_{n \in n_q }\left | q^g \right | $','Interpreter','latex')
 x_t = round(T/4,0);
 y_t = f1(x_t,1);
-txt = ['$\sigma ^ 2 =$',num2str(var,'%2.2f'),'$\,\,\,\,\eta =$',num2str(eta,'%1.0f'),'$\,\,\,\,c_n =$',num2str(c_n,'%2.5f')];
+txt = ['$\sigma ^ 2 =$',num2str(var_1,'%2.2f'),'$\,\,\,\,\eta =$',num2str(eta,'%1.0f'),'$\,\,\,\,c_n =$',num2str(c_n,'%2.5f')];
 text(x_t,y_t,txt,'interpreter','latex')
 legend({'OMD(Stochastic)','OMD(Deterministic)','Convex Problem','Unconstrained $q^g$'},'interpreter','latex')
 
 fig_2 = figure (2);
 cd 'C:\Users\Saeed\OneDrive\UMBC\Dr. Kim\My papers\Matlab\First Paper\Figures_OMD-of-Loss'
-saveas(fig_2,sprintf('All_var=%2.2f_eta=%1.0f_c_n=%2.5f_T=%d.png',var,eta,c_n,T-1));
+saveas(fig_2,sprintf('All_var=%2.2f_eta=%1.0f_c_n=%2.5f_T=%d.png',var_1,eta,c_n,T-1));
 cd 'C:\Users\Saeed\OneDrive\UMBC\Dr. Kim\My papers\Matlab\First Paper\OMD-of-Loss'
 
 toc

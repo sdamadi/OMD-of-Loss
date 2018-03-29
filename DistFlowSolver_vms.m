@@ -7,7 +7,7 @@ dual variables y1 y2 y3 y4 y5 y6{nbr} y7
 c=r'*l;
       minimize c
       
-        y1 :      P    == children*P + diag(r)*l    +  injection_matrix*( var*eps1 + p_c - p_g )
+        y1 :      P    == children*P + diag(r)*l    +  injection_matrix*( var*eps1 + p_c - PV_matrix*p_g )
         
                 %       P_12 == P_23       + r(1)*l_12    +  p_c_2
                 %       P_23 ==              r(2)*l_23    +  p_c_3
