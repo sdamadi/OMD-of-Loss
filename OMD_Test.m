@@ -309,20 +309,17 @@ end
 p_g_max = [1.5 0.4 1.5 1 2]';
 % ------------ % Nominal active power produced by PV's % ------------ %
 p_g_nom = PV_ratio*p_g_max;
-% ------------ % Maximum reactive power produced by inverters of PVs % ------------ % 
-q_g_max = 0.45*p_g_max;
-q_g_min = -q_g_max;
 % ------------ % Initial reactive power for running OMD % ------------ % 
 q_g = zeros(PV_n,1);
 % ------------ % Number of periods % ------------ %
-T = 11;
+T = 121;
 % ------------ % Number of realization of OMD % ------------ %
 num_real = 1;
 % ------------ % The variance of changing loads and PVs % ------------ %
-var_1 = 0.05;
-var_2 = 0.01;
+var_1 = 0.08;
+var_2 = 0.001;
 % ------------ % The OMD's parameter % ------------ %
-eta = 4;
+eta = 2;
 c_n = 1/80;
 
 % ------------ % Stochastic OMD % ------------ %
@@ -337,6 +334,8 @@ for o = 1:num_real
 for k = 1:T
     k
 p_g_rand = p_g_nom + var_2*randn(PV_n,1);
+q_g_max = 0.45*p_g_rand;
+q_g_min = -p_g_rand;
 
 % ------------ % The real loss of network (c0) without noise % ------------ %
 
@@ -416,7 +415,11 @@ end
 
 % ------------ % Initial reactive power for running OMD % ------------ % 
 q_g = zeros(PV_n,1);
-% ------------ % Number of periods % ------------ %
+% ------------ % Maximum reactive power produced by inverters of PVs % ------------ % 
+q_g_max = 0.45*p_g_nom;
+q_g_min = -p_g_nom;
+% ------------ ------------ ------------ ------------ ------------ %
+
 
 
 for o = 1:num_real
@@ -482,13 +485,13 @@ xlim([0 T-1])
 ylabel('$\tilde{c}_0 E[f_t(q^g)]+\tilde{c}_n\sum\limits_{n \in n_q }\left | q^g \right | $','Interpreter','latex')
 x_t = round(T/4,0);
 y_t = f1(x_t,1);
-txt = ['$\sigma ^ 2 =$',num2str(var_1,'%2.2f'),'$\,\,\,\,\eta =$',num2str(eta,'%1.0f'),'$\,\,\,\,c_n =$',num2str(c_n,'%2.5f')];
+txt = ['$\sigma_{noise} ^ 2 =$',num2str(var_1,'%2.2f'),'$\,\,\,\,\eta =$',num2str(eta,'%1.0f'),'$\,\,\,\,c_n =$',num2str(c_n,'%2.5f'),'$\,\,\,\,\sigma_{PV} ^ 2 =$',num2str(var_2,'%2.2f')];
 text(x_t,y_t,txt,'interpreter','latex')
 legend({'OMD(Stochastic)','OMD(Deterministic)'},'interpreter','latex')
 
 fig_1 = figure (1);
 cd 'C:\Users\Saeed\OneDrive\UMBC\Dr. Kim\My papers\Matlab\First Paper\Figures_OMD-of-Loss'
-saveas(fig_1,sprintf('OMD_St_vs_De_var=%2.2f_eta=%1.0f_c_n=%2.5f_T=%d.png',var_1,eta,c_n,T-1));
+saveas(fig_1,sprintf('OMD_St_vs_De_var_noise=%2.2f_eta=%1.0f_c_n=%2.5f_T=%d_var_PV=%2.3f.png',var_1,eta,c_n,T-1,var_2));
 cd 'C:\Users\Saeed\OneDrive\UMBC\Dr. Kim\My papers\Matlab\First Paper\OMD-of-Loss'
 
 
@@ -538,13 +541,13 @@ xlim([0 T-1])
 ylabel('$\tilde{c}_0 E[f_t(q^g)]+\tilde{c}_n\sum\limits_{n \in n_q }\left | q^g \right | $','Interpreter','latex')
 x_t = round(T/4,0);
 y_t = f1(x_t,1);
-txt = ['$\sigma ^ 2 =$',num2str(var_1,'%2.2f'),'$\,\,\,\,\eta =$',num2str(eta,'%1.0f'),'$\,\,\,\,c_n =$',num2str(c_n,'%2.5f')];
+txt = ['$\sigma_{noise} ^ 2 =$',num2str(var_1,'%2.2f'),'$\,\,\,\,\eta =$',num2str(eta,'%1.0f'),'$\,\,\,\,c_n =$',num2str(c_n,'%2.5f'),'$\,\,\,\,\sigma_{PV} ^ 2 =$',num2str(var_2,'%2.2f')];
 text(x_t,y_t,txt,'interpreter','latex')
 legend({'OMD(Stochastic)','OMD(Deterministic)','Convex Problem','Unconstrained $q^g$'},'interpreter','latex')
 
 fig_2 = figure (2);
 cd 'C:\Users\Saeed\OneDrive\UMBC\Dr. Kim\My papers\Matlab\First Paper\Figures_OMD-of-Loss'
-saveas(fig_2,sprintf('All_var=%2.2f_eta=%1.0f_c_n=%2.5f_T=%d.png',var_1,eta,c_n,T-1));
+saveas(fig_2,sprintf('All_var_noise=%2.2f_eta=%1.0f_c_n=%2.5f_T=%d_var_PV=%2.3f.png',var_1,eta,c_n,T-1,var_2));
 cd 'C:\Users\Saeed\OneDrive\UMBC\Dr. Kim\My papers\Matlab\First Paper\OMD-of-Loss'
 
 toc
